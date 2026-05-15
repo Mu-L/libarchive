@@ -255,9 +255,13 @@ client_close_proxy(struct archive_read_filter *self)
 static int
 client_switch_proxy(struct archive_read_filter *self, unsigned int iindex)
 {
-	struct archive_read *a = self->archive;
+	struct archive_read *a;
 	int r1 = ARCHIVE_OK, r2 = ARCHIVE_OK;
 	void *data2;
+
+	while (self->upstream != NULL)
+		self = self->upstream;
+	a = self->archive;
 
 	/* Don't do anything if already in the specified data node */
 	if (a->client.cursor == iindex)
